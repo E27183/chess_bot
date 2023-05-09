@@ -26,14 +26,13 @@ moveListToOnly straightMove[8][8][4] = {};
 moveListToOnly knightMove[8][8] = {};
 moveListToOnly kingMove[8][8] = {};
 
-fourMoveListToHeap* diagonalM(char* from) {
+void diagonalM(char* from, fourMoveListToHeap* outputPointer) {
     char position_x = *from;
     char position_y = *(from + 1);
-    fourMoveListToHeap output;
-    output.first = NULL;
-    output.second = NULL;
-    output.third = NULL;
-    output.fourth = NULL;
+    (*outputPointer).first = NULL;
+    (*outputPointer).second = NULL;
+    (*outputPointer).third = NULL;
+    (*outputPointer).fourth = NULL;
     moveListToOnly* prev = NULL;
     while (position_x > 0 && position_y > 0) {
         position_x--;
@@ -45,13 +44,13 @@ fourMoveListToHeap* diagonalM(char* from) {
         if (prev != NULL) {
             (*prev).next = &node;
         } else {
-            output.first = &node;
+            (*outputPointer).first = &node;
         };
         prev = &node;
     };
-    char position_x = *from;
-    char position_y = *(from + 1);
-    moveListToOnly* prev = NULL;
+    position_x = *from;
+    position_y = *(from + 1);
+    prev = NULL;
     while (position_x > 0 && position_y < 8) {
         position_x--;
         position_y++;
@@ -62,13 +61,13 @@ fourMoveListToHeap* diagonalM(char* from) {
         if (prev != NULL) {
             (*prev).next = &node;
         } else {
-            output.second = &node;
+            (*outputPointer).second = &node;
         };
         prev = &node;
     };
-    char position_x = *from;
-    char position_y = *(from + 1);
-    moveListToOnly* prev = NULL;
+    position_x = *from;
+    position_y = *(from + 1);
+    prev = NULL;
     while (position_x < 8 && position_y > 0) {
         position_x++;
         position_y--;
@@ -79,13 +78,13 @@ fourMoveListToHeap* diagonalM(char* from) {
         if (prev != NULL) {
             (*prev).next = &node;
         } else {
-            output.third = &node;
+            (*outputPointer).third = &node;
         };
         prev = &node;
     };
-    char position_x = *from;
-    char position_y = *(from + 1);
-    moveListToOnly* prev = NULL;
+    position_x = *from;
+    position_y = *(from + 1);
+    prev = NULL;
     while (position_x < 8 && position_y < 8) {
         position_x++;
         position_y++;
@@ -96,11 +95,10 @@ fourMoveListToHeap* diagonalM(char* from) {
         if (prev != NULL) {
             (*prev).next = &node;
         } else {
-            output.fourth = &node;
+            (*outputPointer).fourth = &node;
         };
         prev = &node;
     };
-    return &output;
 };
 
 class gameState {
@@ -126,5 +124,8 @@ class gameState {
 };
 
 int main() {
+    char d[2] = {3, 0};
+    fourMoveListToHeap dummyres;
+    diagonalM(d, &dummyres);
     return 0;
 };
