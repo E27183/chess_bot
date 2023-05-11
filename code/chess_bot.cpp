@@ -28,7 +28,7 @@ class gameState {
        bool whiteToMove;
 };
 
-char initial_board[8][8] = {{12, 13, 14, 15, 16, 14, 13, 12}, {11, 11, 11, 11, 11, 11, 11, 11}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {21, 21, 21, 21, 21, 21, 21, 21}, {22, 23, 24, 25, 26, 24, 23, 22}};
+char initial_board[8][8] = {{21, 21, 21, 21, 21, 21, 21, 21}, {22, 23, 24, 25, 26, 24, 23, 22}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {12, 13, 14, 15, 16, 14, 13, 12}, {11, 11, 11, 11, 11, 11, 11, 11}};
 
 int pieceValue(char* piece) {
     switch(*piece) {
@@ -106,18 +106,27 @@ char printPiece(char piece) {
 //     abort();
 // };
 
-void printBoard(char* board) {
-    cout << "+-+-+-+-+-+-+-+-+\n";
+void printBoard(char* board, bool whiteToMove) {
+    string header = whiteToMove ? "   A B C D E F G H\n  +-+-+-+-+-+-+-+-+\n" : "   H G F E D C B A\n  +-+-+-+-+-+-+-+-+\n";
+    cout << header;
     for (int i = 0; i < 8; i++) {
-        cout << '|';
+        cout << char(49 + (whiteToMove ? 7 - i : i)) << " |";
         for (int j = 0; j < 8; j++) {
-            cout << printPiece(*(board + i*8 + j)) << '|';
+            char pointerOffset = whiteToMove ? i*8 + j : 63 - (i * 8) - j;
+            cout << printPiece(*(board + pointerOffset)) << '|';
         };
-        cout << "\n+-+-+-+-+-+-+-+-+\n";
+        cout << "\n  +-+-+-+-+-+-+-+-+\n";
     };
 };
 
-int main() {    
+bool gameOver = false;
+
+int main() {
+    srand((unsigned int)time(NULL));
+    int initial_rng = rand();
+    bool iAmWhite = initial_rng > (RAND_MAX / 2);
+    string userColour = iAmWhite ? "black" : "white";
+    cout << "Starting game\nBlack pieces are uppercase, white pieces are lowercase\nTo input moves, type in the square you want to move from and the square you want to move to, separated by a space\nExample: 'e2 e4' (without the quotes)\nYou may also type 'resign' without quotes to resign\nYou are playing as " << userColour << "\nGood luck!\n\n";    
     // set_terminate(handleExit);
     char moveTrace[30][3]; //From, to, piece taken? (special values: 31 is en passant, 32 is castle event)
     char moveIndex; //This is a number I just like chars bc they're small
@@ -132,7 +141,13 @@ int main() {
             actualBoardState.board[i][j] = initial_board[i][j];
         };
     };
-    int initial_rng = rand();
-    bool iAmWhite = initial_rng * 2 > RAND_MAX;
+    do {
+        if (actualBoardState.whiteToMove == iAmWhite) {} else {
+            printBoard(&(actualBoardState.board[0][0]), actualBoardState.whiteToMove);
+            cout << "Input your next move: ";
+        };
+        
+        gameOver = true;
+    } while (!gameOver);
     return 0;
 };
