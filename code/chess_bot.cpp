@@ -5,105 +5,6 @@
 #include <cstdlib>
 using namespace std;
 
-struct moveList {
-    char from[2];
-    char to[2];
-    moveList* next;
-};
-
-struct moveListToOnly {
-    char to[2];
-    moveListToOnly* next;
-};
-
-struct fourMoveListToHeap {
-    moveListToOnly* first;
-    moveListToOnly* second;
-    moveListToOnly* third;
-    moveListToOnly* fourth;
-};
-
-moveListToOnly diagonalMove[8][8][4] = {};
-moveListToOnly straightMove[8][8][4] = {};
-moveListToOnly knightMove[8][8] = {};
-moveListToOnly kingMove[8][8] = {};
-
-// void diagonalM(char* from, fourMoveListToHeap* outputPointer) {
-//     cout << "       ah        ";
-//     char position_x = *from;
-//     char position_y = *(from + 1);
-//     (*outputPointer).first = NULL;
-//     (*outputPointer).second = NULL;
-//     (*outputPointer).third = NULL;
-//     (*outputPointer).fourth = NULL;
-//     moveListToOnly* prev = NULL;
-//     while (position_x > 0 && position_y > 0) {
-//         position_x--;
-//         position_y--;
-//         moveListToOnly node;
-//         node.to[0] = position_x;
-//         node.to[1] = position_y;
-//         node.next = NULL;
-//         if (prev != NULL) {
-//             (*prev).next = &node;
-//         } else {
-//             (*outputPointer).first = &node;
-//         };
-//         prev = &node;
-//     };
-//     position_x = *from;
-//     position_y = *(from + 1);
-//     prev = NULL;
-//     while (position_x > 0 && position_y < 8) {
-//         position_x--;
-//         position_y++;
-//         moveListToOnly node;
-//         node.to[0] = position_x;
-//         node.to[1] = position_y;
-//         node.next = NULL;
-//         if (prev != NULL) {
-//             (*prev).next = &node;
-//         } else {
-//             (*outputPointer).second = &node;
-//         };
-//         prev = &node;
-//     };
-//     position_x = *from;
-//     position_y = *(from + 1);
-//     prev = NULL;
-//     while (position_x < 8 && position_y > 0) {
-//         position_x++;
-//         position_y--;
-//         moveListToOnly node;
-//         node.to[0] = position_x;
-//         node.to[1] = position_y;
-//         node.next = NULL;
-//         if (prev != NULL) {
-//             (*prev).next = &node;
-//         } else {
-//             (*outputPointer).third = &node;
-//         };
-//         prev = &node;
-//     };
-//     position_x = *from;
-//     position_y = *(from + 1);
-//     prev = NULL;
-//     while (position_x < 8 && position_y < 8) {
-//         position_x++;
-//         position_y++;
-//         moveListToOnly node;
-//         node.to[0] = position_x;
-//         node.to[1] = position_y;
-//         node.next = NULL;
-//         if (prev != NULL) {
-//             (*prev).next = &node;
-//         } else {
-//             (*outputPointer).fourth = &node;
-//         };
-//         prev = &node;
-//     };
-// };
-
 class gameState {
     public:
         bool blackCanCastle;
@@ -166,10 +67,6 @@ int simpleEval(char* board) {
     return res;
 };
 
-void aaa() {
-    cout << "Hello";
-};
-
 char printPiece(char piece) {
     switch (piece)
     {
@@ -204,6 +101,11 @@ char printPiece(char piece) {
     };
 };
 
+// void handleExit() { //Maybe dangerous if it hides error message while developing
+//     cout << "Exiting program.\n";
+//     abort();
+// };
+
 void printBoard(char* board) {
     cout << "+-+-+-+-+-+-+-+-+\n";
     for (int i = 0; i < 8; i++) {
@@ -216,22 +118,7 @@ void printBoard(char* board) {
 };
 
 int main() {    
-    // thread identifier (aaa);
-    // cout << "       gh        ";
-    // char d[2] = {3, 0};
-    // fourMoveListToHeap dummyres;
-    // diagonalM(d, &dummyres);
-    // cout << "       gh        ";
-    // cout << dummyres.third;
-    // cout << "       gh        ";
-    // moveListToOnly* tmp = dummyres.second;
-    // cout << "a  ";
-    // while (tmp != NULL) {
-    //     cout << "Ready";
-    //     cout << int((*tmp).to[0]) << "  " << int((*tmp).to[1]) << "  ";
-    //     tmp = (*tmp).next;
-    // };
-    // cout << "b  ";
+    // set_terminate(handleExit);
     char moveTrace[30][3]; //From, to, piece taken? (special values: 31 is en passant, 32 is castle event)
     char moveIndex; //This is a number I just like chars bc they're small
     gameState exploringBoardstate;
@@ -247,10 +134,5 @@ int main() {
     };
     int initial_rng = rand();
     bool iAmWhite = initial_rng * 2 > RAND_MAX;
-    printBoard(&(actualBoardState.board[0][0]));
-    // char piece = 24;
-    // int v = pieceValue(&piece);
-    // cout << v;
-    // identifier.join();
     return 0;
 };
