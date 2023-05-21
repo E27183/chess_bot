@@ -151,42 +151,42 @@ bool kingAttackedCheck(char* board, bool white) {
             };
         };
     };
-    char direction[4][2] = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+    char diagonal_direction[4][2] = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
     for (char i = 0; i < 4; i++) { //Is checked diagonally?
-        char tmpx = kingX + direction[i][0];
-        char tmpy = kingY + direction[i][1];
+        char tmpx = kingX + diagonal_direction[i][0];
+        char tmpy = kingY + diagonal_direction[i][1];
         while (tmpy >= 0 && tmpx >= 0 && tmpy < 8 && tmpx < 8 && board[8 * tmpx + tmpy] == 0) {
-            tmpx += direction[i][0];
-            tmpy += direction[i][1];
+            tmpx += diagonal_direction[i][0];
+            tmpy += diagonal_direction[i][1];
         };
         if (tmpy >= 0 && tmpx >= 0 && tmpy < 8 && tmpx < 8 && (board[8 * tmpx + tmpy] == 14 + (white * 10) || board[8 * tmpx + tmpy] == 15 + (white * 10))) {
             return true;
         };
     };
-    char direction[4][2] = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
+    char straight_direction[4][2] = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
     for (char i = 0; i < 4; i++) { //Is checked straight?
-        char tmpx = kingX + direction[i][0];
-        char tmpy = kingY + direction[i][1];
+        char tmpx = kingX + straight_direction[i][0];
+        char tmpy = kingY + straight_direction[i][1];
         while (tmpy >= 0 && tmpx >= 0 && tmpy < 8 && tmpx < 8 && board[8 * tmpx + tmpy] == 0) {
-            tmpx += direction[i][0];
-            tmpy += direction[i][1];
+            tmpx += straight_direction[i][0];
+            tmpy += straight_direction[i][1];
         };
         if (tmpy >= 0 && tmpx >= 0 && tmpy < 8 && tmpx < 8 && (board[8 * tmpx + tmpy] == 12 + (white * 10) || board[8 * tmpx + tmpy] == 15 + (white * 10))) {
             return true;
         };
     };
-    char direction[8][2] = {{-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}};
+    char radial_direction[8][2] = {{-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}};
     for (char i = 0; i < 8; i++) { //Is checked by king?
-        char tmpx = kingX + direction[i][0];
-        char tmpy = kingY + direction[i][1];
+        char tmpx = kingX + radial_direction[i][0];
+        char tmpy = kingY + radial_direction[i][1];
         if (tmpx >= 0 && tmpx < 8 && tmpy >= 0 && tmpy < 8 && board[8 * tmpx + tmpy] == 16 + (white * 10)) {
             return true;
         };
     };
-    char direction[2][2] = {{1 - (2 * white), 1}, {1 - (2 * white), -1}};
+    char pawn_take_direction[2][2] = {{(char)(1 - (2 * white)), 1}, {(char)(1 - (2 * white)), -1}};
     for (char i = 0; i < 2; i++) {
-        char tmpx = kingX + direction[i][0];
-        char tmpy = kingY + direction[i][1];
+        char tmpx = kingX + pawn_take_direction[i][0];
+        char tmpy = kingY + pawn_take_direction[i][1];
         if (tmpx >= 0 && tmpx < 8 && tmpy >= 0 && tmpy < 8 && board[8 * tmpx + tmpy] == 11 + (white * 10)) {
             return true;
         };
