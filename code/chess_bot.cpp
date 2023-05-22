@@ -7,8 +7,10 @@ using namespace std;
 
 class gameState {
     public:
-        bool blackCanCastle;
-        bool whiteCanCastle;
+        bool blackCanCastleShort;
+        bool whiteCanCastleShort;
+        bool blackCanCastleLong;
+        bool whiteCanCastleLong;
         bool canEnPassant;
         //Square the capturing piece would land on if accepted
         char enPassantTarget; 
@@ -194,6 +196,95 @@ bool kingAttackedCheck(char* board, bool white) {
     return false;
 };
 
+bool legalMove(gameState* board, char* moveNode, bool white, bool playIfLegal) {
+    char fromX = moveNode[0] / 8;
+    char fromY = moveNode[0] % 8;
+    char toX = moveNode[1] / 8;
+    char toY = moveNode[1] % 8;
+    char preserve_old_piece = board->board[toX][toY];
+    if (moveNode[2] != 0) {
+        switch(moveNode[2]) { //Note: currently does NOT account for moving in to check
+            case 31:
+                if (!board->canEnPassant || board->enPassantTarget != moveNode[1] || board->board[fromX][fromY] != 21 - (10 * white) || (toY - fromY != 1 && fromY - toY != 1) || (white && fromX - toX != 1) || (!white && toX - fromX != 1) || board->board[toX][toY] != 0) {
+                    return false;
+                };
+                char takenX = fromX;
+                char takenY = toY;
+                board->board[takenX][takenY], board->board[fromX][fromY] = 0;
+                board->board[toX][toY] = 21 - (10 * white);
+                bool flag = kingAttackedCheck(&(board->board[0][0]), white);
+                if (flag || !playIfLegal) {
+                    board->board[takenX][takenY] = 11 + (10 * white);
+                    board->board[fromX][fromY] = 21 - (10 * white);
+                    board->board[toX][toY] = 0;
+                };
+                return !flag;
+            case 32:
+                if ((white && !board->whiteCanCastleShort) || (!white && !board->blackCanCastleShort)) {
+                    return false;
+                };
+                if (white) {
+                    if (board->board[7][6] == 0 && board->board[7][5] == 0) {
+                        if (playIfLegal) {
+                            board->board[7][7], board->board[7][4] = 0;
+                            board->board[7][6] = 16;
+                            board->board[7][5] = 12;
+                            board->whiteCanCastleLong = false;
+                            board->whiteCanCastleShort = false;
+                        };
+                        return true;
+                    } else {
+                        return false;
+                    };
+                } else {
+                    if (board->board[0][6] == 0 && board->board[0][5] == 0) {
+                        if (playIfLegal) {
+                            board->board[0][7], board->board[0][4] = 0;
+                            board->board[0][6] = 26;
+                            board->board[0][5] = 22;
+                            board->blackCanCastleLong = false;
+                            board->blackCanCastleShort = false;
+                        };
+                        return true;
+                    } else {
+                        return false;
+                    };
+                };
+            case 33:
+                if ((white && !board->whiteCanCastleLong) || (!white && !board->blackCanCastleLong)) {
+                    return false;
+                };
+                if (white) {
+                    if (board->board[7][1] == 0 && board->board[7][2] == 0 && board->board[7][3] == 0) {
+                        if (playIfLegal) {
+                            board->board[7][0], board->board[7][4] = 0;
+                            board->board[7][2] = 16;
+                            board->board[7][3] = 12;
+                            board->whiteCanCastleLong = false;
+                            board->whiteCanCastleShort = false;
+                        };
+                        return true;
+                    } else {
+                        return false;
+                    };
+                } else {
+                    if (board->board[0][6] == 0 && board->board[0][5] == 0) {
+                        if (playIfLegal) {
+                            board->board[0][7], board->board[0][4] = 0;
+                            board->board[0][6] = 26;
+                            board->board[0][5] = 22;
+                            board->blackCanCastleLong = false;
+                            board->blackCanCastleShort = false;
+                        };
+                        return true;
+                    } else {
+                        return false;
+                    };
+                };                
+        };
+    };
+};
+
 int main() {
     srand((unsigned int)time(NULL));
     int initial_rng = rand();
@@ -201,13 +292,15 @@ int main() {
     string userColour = iAmWhite ? "black" : "white";
     cout << "Starting game\nBlack pieces are uppercase, white pieces are lowercase\nTo input moves, type in the square you want to move from and the square you want to move to, lowercase and separated by a space\nExample: 'e2 e4' (without the quotes)\nYou may also type 'resign' without quotes to resign\nYou are playing as " << userColour << "\nGood luck!\n\n";    
     // set_terminate(handleExit);
-    char moveTrace[30][3]; //From, to, piece taken? (special values: 31 is en passant, 32 is castle event)
+    char moveTrace[30][3]; //From, to, piece taken? (special values: 31 is en passant, 32 is short castle event, 33 is long castle event)
     char moveIndex; //This is a number I just like chars bc they're small
     gameState exploringBoardstate;
     gameState actualBoardState;
-    actualBoardState.blackCanCastle = true;
+    actualBoardState.blackCanCastleShort = true;
+    actualBoardState.blackCanCastleLong = true;
     actualBoardState.canEnPassant = false;
-    actualBoardState.whiteCanCastle = true;
+    actualBoardState.whiteCanCastleShort = true;
+    actualBoardState.whiteCanCastleLong = true;
     actualBoardState.whiteToMove = true;
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
